@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
         <footer className="py-8 px-4 border-t border-stone-200">
           <div className=" max-w-6xl mx-auto flex justify-center items-center">
             <p className="text-stone-500 text-sm">
-              Made with 💗 by RoadsideCoder
+              Made with 💗 using Next.js and AI
             </p>
           </div>
         </footer>

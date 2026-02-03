@@ -6,18 +6,19 @@ import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
 // import HowToCookModal from "./HowToCookModal";
 // import PricingModal from "./PricingModal";
 import Image from "next/image";
-// import { checkUser } from "@/lib/checkUser";
+import { checkUser } from "@/lib/checkUser";
 import { Badge } from "./ui/badge";
 import UserDropdown from "./UserDropdown";
 
 export default async function Header() {
- 
+  const user = await checkUser();
+
   return (
     <header className="fixed top-0 w-full border-b border-stone-200 bg-stone-50/80 backdrop-blur-md z-50 supports-backdrop-filter:bg-stone-50/60">
       <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link
-          // href={user ? "/dashboard" : "/"}
+          href={user ? "/dashboard" : "/"}
           className="flex items-center gap-2 group"
         >
           <Image
@@ -52,7 +53,7 @@ export default async function Header() {
           {/* <HowToCookModal /> */}
 
           <SignedIn>
-            {/* Pricing Modal with Built-in Trigger */}
+            {/* Pricing Modal with Built-in Trigger
             {user && (
               <PricingModal subscriptionTier={user.subscriptionTier}>
                 <Badge
@@ -75,7 +76,7 @@ export default async function Header() {
                   </span>
                 </Badge>
               </PricingModal>
-            )}
+            )} */}
 
             <UserDropdown />
           </SignedIn>
