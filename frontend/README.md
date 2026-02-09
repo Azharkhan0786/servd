@@ -380,13 +380,9 @@ Base UI components are built with:
 
 ---
 
-## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
-
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - [TheMealDB](https://www.themealdb.com/) - Free recipe API
 - [Clerk](https://clerk.com/) - Authentication made easy
