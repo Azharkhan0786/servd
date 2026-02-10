@@ -392,11 +392,4 @@ Base UI components are built with:
 
 ---
 
-<div align="center">
-
-**Built with 💗 using Next.js, Strapi, and AI**
-
-© 2024 Servd - AI Recipe Platform
-
-</div>
 
