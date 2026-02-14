@@ -11,6 +11,7 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
+//scan image with gemini vision and return ingredients list
 export async function scanPantryImage(formData) {
   try {
     const user = await checkUser();
@@ -123,4 +124,54 @@ Rules:
     throw new Error(error.message || "Failed to scan image");
   }
 }
-      
+
+// Save ingredients to pantry
+export async function saveToPantry(formData) {
+  try {
+    const user = await checkUser();
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+
+    const ingredientsJson = formData.get("ingredients");
+    const ingredients = JSON.parse(ingredientsJson);
+
+    if (!ingredients || ingredients.length === 0) {
+      throw new Error("No ingredients to save");
+    }
+
+    // Create pantry items in Strapi
+    const savedItems = [];
+    for (const ingredient of ingredients) {
+      const response = await fetch(`${STRAPI_URL}/api/pantry-items`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+        },
+        body: JSON.stringify({
+          data: {
+            name: ingredient.name,
+            quantity: ingredient.quantity,
+            imageUrl: "",
+            owner: user.id,
+          },
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        savedItems.push(data.data);
+      }
+    }
+
+    return {
+      success: true,
+      savedItems,
+      message: `Saved ${savedItems.length} items to your pantry!`,
+    };
+  } catch (error) {
+    console.error("Error saving to pantry:", error);
+    throw new Error(error.message || "Failed to save items");
+  }
+}
