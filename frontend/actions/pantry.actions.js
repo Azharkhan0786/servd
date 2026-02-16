@@ -2,7 +2,8 @@
 
 import { checkUser } from "@/lib/checkUser";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import arcjet, { request } from "@arcjet/next";
+import { freePantryScans, proTierLimit } from "@/lib/arcjet";
+import { request } from "@arcjet/next";
 
 const STRAPI_URL =
   process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
@@ -11,54 +12,53 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
-//scan image with gemini vision and return ingredients list
+// Scan image with Gemini Vision
 export async function scanPantryImage(formData) {
   try {
     const user = await checkUser();
     if (!user) {
-      throw new Error("Unauthorized");
+      throw new Error("User not authenticated");
     }
 
+    // Check if user is Pro
     const isPro = user.subscriptionTier === "pro";
 
     // Apply Arcjet rate limit based on tier
     const arcjetClient = isPro ? proTierLimit : freePantryScans;
 
-    //create a request object  for Arcjet
+    // Create a request object for Arcjet
     const req = await request();
 
     const decision = await arcjetClient.protect(req, {
-      userId: user.clerkId,
-      requested: 1,
+      userId: user.clerkId, // Use clerkId from checkUser
+      requested: 1, // Request 1 token from bucket
     });
 
     if (decision.isDenied()) {
       if (decision.reason.isRateLimit()) {
         throw new Error(
-          `Monthly scan limit reached ${
+          `Monthly scan limit reached. ${
             isPro
-              ? "Please cantact for support if you need more scans"
+              ? "Please contact support if you need more scans."
               : "Upgrade to Pro for unlimited scans!"
-          }`,
+          }`
         );
       }
-      throw new Error("Request debnied by security system");
+      throw new Error("Request denied by security system");
     }
 
     const imageFile = formData.get("image");
     if (!imageFile) {
-      throw new Error("NO image provided");
+      throw new Error("No image provided");
     }
 
-    //converting image to base64
+    // Convert image to base64
     const bytes = await imageFile.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const base64Image = buffer.toString("base64");
 
-    //defining the model
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash-lite",
-    });
+    // Call Gemini Vision API
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
     const prompt = `
 You are a professional chef and ingredient recognition expert. Analyze this image of a pantry/fridge and identify all visible food ingredients.
@@ -94,7 +94,7 @@ Rules:
     const response = await result.response;
     const text = response.text();
 
-    //parsing JSON response
+    // Parse JSON response
     let ingredients;
     try {
       const cleanText = text
@@ -109,7 +109,7 @@ Rules:
 
     if (!Array.isArray(ingredients) || ingredients.length === 0) {
       throw new Error(
-        "No ingredients detected in the image. Please try a clearer photo.",
+        "No ingredients detected in the image. Please try a clearer photo."
       );
     }
 
@@ -178,7 +178,7 @@ export async function saveToPantry(formData) {
 
 // Add pantry item manually
 export async function addPantryItemManually(formData) {
-   try {
+  try {
     const user = await checkUser();
     if (!user) {
       throw new Error("User not authenticated");
@@ -223,5 +223,116 @@ export async function addPantryItemManually(formData) {
   } catch (error) {
     console.error("Error adding item manually:", error);
     throw new Error(error.message || "Failed to add item");
+  }
+}
+
+// Get user's pantry items
+export async function getPantryItems() {
+  try {
+    const user = await checkUser();
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+
+    const response = await fetch(
+      `${STRAPI_URL}/api/pantry-items?filters[owner][id][$eq]=${user.id}&sort=createdAt:desc`,
+      {
+        headers: {
+          Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+        },
+        cache: "no-store",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch pantry items");
+    }
+
+    const data = await response.json();
+
+    const isPro = user.subscriptionTier === "pro";
+
+    return {
+      success: true,
+      items: data.data || [],
+      scansLimit: isPro ? "unlimited" : 10,
+    };
+  } catch (error) {
+    console.error("Error fetching pantry:", error);
+    throw new Error(error.message || "Failed to load pantry");
+  }
+}
+
+// Delete pantry item
+export async function deletePantryItem(formData) {
+  try {
+    const user = await checkUser();
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+
+    const itemId = formData.get("itemId");
+
+    const response = await fetch(`${STRAPI_URL}/api/pantry-items/${itemId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete item");
+    }
+
+    return {
+      success: true,
+      message: "Item removed from pantry",
+    };
+  } catch (error) {
+    console.error("Error deleting item:", error);
+    throw new Error(error.message || "Failed to delete item");
+  }
+}
+
+// Update pantry item
+export async function updatePantryItem(formData) {
+  try {
+    const user = await checkUser();
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+
+    const itemId = formData.get("itemId");
+    const name = formData.get("name");
+    const quantity = formData.get("quantity");
+
+    const response = await fetch(`${STRAPI_URL}/api/pantry-items/${itemId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+      },
+      body: JSON.stringify({
+        data: {
+          name,
+          quantity,
+        },
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update item");
+    }
+
+    const data = await response.json();
+
+    return {
+      success: true,
+      item: data.data,
+      message: "Item updated successfully",
+    };
+  } catch (error) {
+    console.error("Error updating item:", error);
+    throw new Error(error.message || "Failed to update item");
   }
 }
