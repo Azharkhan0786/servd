@@ -46,9 +46,11 @@ The platform features a modern, responsive design with AI-generated recipe sugge
 - **Category Browsing** - Explore 14+ recipe categories (Beef, Chicken, Dessert, Pasta, Seafood, Vegan, etc.)
 - **Cuisine Explorer** - Browse 30+ world cuisines (Italian, Mexican, Japanese, Indian, etc.)
 - **Smart Search** - Find recipes by name, ingredient, or dietary preference
+- **Export as PDF** - Download any recipe as a nicely formatted PDF
 
 ### 📸 Pantry Management
 - **AI-Powered Ingredient Recognition** - Photo recognition to identify what you have
+- **Image Upload** - Snap or upload ingredient pictures manually via modal
 - **Smart Suggestions** - Get recipe recommendations based on your available ingredients
 - **Waste Reduction** - Never let ingredients go to waste again
 
@@ -80,6 +82,7 @@ The platform features a modern, responsive design with AI-generated recipe sugge
 | **ArcJet** | Security & rate limiting |
 | **Lucide React** | Beautiful icons |
 | **Sonner** | Toast notifications |
+| **@react-pdf/renderer** | Generate downloadable recipe PDFs |
 | **TheMealDB API** | Recipe data source |
 
 ### Backend
