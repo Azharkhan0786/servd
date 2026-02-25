@@ -46,19 +46,19 @@ function RecipeContent() {
     // components (header/badge).  this is invoked after the pricing modal
     // closes so we can pick up any subscription change that happened there.
     const reloadRecipe = () => {
-      if (!recipeName) return;
-      const formData = new FormData();
-      formData.append("recipeName", recipeName);
-      fetchRecipe(formData);
-      router.refresh();
+        if (!recipeName) return;
+        const formData = new FormData();
+        formData.append("recipeName", recipeName);
+        fetchRecipe(formData);
+        router.refresh();
     };
 
     // also listen for the global event in case the modal is opened from the
     // header; that component can't easily provide a callback to us.
     useEffect(() => {
-      const handler = () => reloadRecipe();
-      window.addEventListener("pricingModalClosed", handler);
-      return () => window.removeEventListener("pricingModalClosed", handler);
+        const handler = () => reloadRecipe();
+        window.addEventListener("pricingModalClosed", handler);
+        return () => window.removeEventListener("pricingModalClosed", handler);
     }, [recipeName]);
 
     // Get or generate recipe
@@ -316,8 +316,8 @@ function RecipeContent() {
                                 onClick={handleToggleSave}
                                 disabled={saving || removing}
                                 className={`${isSaved
-                                        ? "bg-green-600 hover:bg-green-700 border-2 border-green-700"
-                                        : "bg-orange-600 hover:bg-orange-700 border-2 border-orange-700"
+                                    ? "bg-green-600 hover:bg-green-700 border-2 border-green-700"
+                                    : "bg-orange-600 hover:bg-orange-700 border-2 border-orange-700"
                                     } text-white gap-2 transition-all`}
                             >
                                 {saving || removing ? (
@@ -470,8 +470,8 @@ function RecipeContent() {
                                     <div
                                         key={step.step}
                                         className={`relative pl-12 pb-8 ${index !== recipe.instructions.length - 1
-                                                ? "border-l-2 border-orange-300 ml-5"
-                                                : "ml-5"
+                                            ? "border-l-2 border-orange-300 ml-5"
+                                            : "ml-5"
                                             }`}
                                     >
                                         {/* Step Number */}
