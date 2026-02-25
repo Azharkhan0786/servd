@@ -1,13 +1,17 @@
+export const dynamic = "force-dynamic";
+
 import React from "react";
 import { Button } from "./ui/button";
 import { Cookie, Refrigerator, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
+import HowToCookModal from "./HowToCookModal";
+import PricingModal from "./PricingModal";
 import Image from "next/image";
 import { checkUser } from "@/lib/checkUser";
 import { Badge } from "./ui/badge";
-import PricingModal from "./PricingModal";
 import UserDropdown from "./UserDropdown";
+
 export default async function Header() {
   const user = await checkUser();
 
@@ -48,14 +52,13 @@ export default async function Header() {
 
         {/* Action Buttons */}
         <div className="flex items-center space-x-4">
-          {/* <HowToCookModal /> */}
+          <HowToCookModal />
 
           <SignedIn>
-            {/* How to Cook */}
-
-            { user &&  (
+            {/* Pricing Modal with Built-in Trigger */}
+            {user && (
               <PricingModal subscriptionTier={user.subscriptionTier}>
-                  <Badge
+                <Badge
                   variant="outline"
                   className={`flex h-8 px-3 gap-1.5 rounded-full text-xs font-semibold transition-all ${
                     user.subscriptionTier === "pro"
@@ -74,7 +77,8 @@ export default async function Header() {
                     {user.subscriptionTier === "pro" ? "Pro Chef" : "Free Plan"}
                   </span>
                 </Badge>
-              </PricingModal>)}
+              </PricingModal>
+            )}
 
             <UserDropdown />
           </SignedIn>
