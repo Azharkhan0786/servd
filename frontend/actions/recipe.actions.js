@@ -434,6 +434,8 @@ export async function removeRecipeFromCollection(formData) {
     );
 
     if (!searchResponse.ok) {
+      const errText = await searchResponse.text();
+      console.error("❌ searchResponse error:", searchResponse.status, errText);
       throw new Error("Failed to find saved recipe");
     }
 

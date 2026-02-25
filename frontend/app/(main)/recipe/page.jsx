@@ -415,8 +415,8 @@ function RecipeContent() {
                                         onClose={reloadRecipe}
                                     >
                                         <div className="grid grid-cols-2 gap-3">
-                                            <div className="bg-orange-50 p-3 text-center border-2 border-orange-100">
-                                                <div className="text-2xl font-bold text-orange-600">
+                                            <div className="bg-orange-50 p-3 text-center border-2 border-orange-100 max-w-[120px]">
+                                                <div className="text-2xl font-bold text-orange-600 break-words whitespace-normal">
                                                     {recipe.nutrition.calories}
                                                 </div>
                                                 <div className="text-xs text-stone-500 font-bold uppercase tracking-wide">
@@ -424,8 +424,8 @@ function RecipeContent() {
                                                 </div>
                                             </div>
 
-                                            <div className="bg-stone-50 p-3 text-center border-2 border-stone-100">
-                                                <div className="text-2xl font-bold text-stone-900">
+                                            <div className="bg-stone-50 p-3 text-center border-2 border-stone-100 max-w-[120px]">
+                                                <div className="text-2xl font-bold text-stone-900 break-words whitespace-normal">
                                                     {recipe.nutrition.protein}
                                                 </div>
                                                 <div className="text-xs text-stone-500 font-bold uppercase tracking-wide">
@@ -433,8 +433,8 @@ function RecipeContent() {
                                                 </div>
                                             </div>
 
-                                            <div className="bg-stone-50 p-3 text-center border-2 border-stone-100">
-                                                <div className="text-2xl font-bold text-stone-900">
+                                            <div className="bg-stone-50 p-3 text-center border-2 border-stone-100 max-w-[120px]">
+                                                <div className="text-2xl font-bold text-stone-900 break-words whitespace-normal">
                                                     {recipe.nutrition.carbs}
                                                 </div>
                                                 <div className="text-xs text-stone-500 font-bold uppercase tracking-wide">
@@ -442,8 +442,8 @@ function RecipeContent() {
                                                 </div>
                                             </div>
 
-                                            <div className="bg-stone-50 p-3 text-center border-2 border-stone-100">
-                                                <div className="text-2xl font-bold text-stone-900">
+                                            <div className="bg-stone-50 p-3 text-center border-2 border-stone-100 max-w-[120px]">
+                                                <div className="text-2xl font-bold text-stone-900 break-words whitespace-normal">
                                                     {recipe.nutrition.fat}
                                                 </div>
                                                 <div className="text-xs text-stone-500 font-bold uppercase tracking-wide">

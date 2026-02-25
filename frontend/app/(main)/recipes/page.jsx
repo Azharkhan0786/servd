@@ -5,7 +5,7 @@ import { Bookmark, Loader2, ChefHat } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import useFetch from "@/hooks/use-fetch";
-import { getSavedRecipes } from "@/actions/recipe.actions";
+import { getSavedRecipes, removeRecipeFromCollection } from "@/actions/recipe.actions";
 import RecipeCard from "@/components/RecipeCard";
 
 export default function SavedRecipesPage() {
@@ -50,7 +50,7 @@ export default function SavedRecipesPage() {
           <div className="grid md:grid-cols-2 gap-6">
             {recipes.map((recipe) => (
               <RecipeCard
-                key={recipe.documentId}
+                key={recipe.id}
                 recipe={recipe}
                 variant="list"
               />
