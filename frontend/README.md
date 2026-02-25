@@ -60,6 +60,7 @@ The platform features a modern, responsive design with AI-generated recipe sugge
   - UI updates immediately when the user changes plan; the header badge, nutrition panels, and other gated features refresh as soon as the pricing modal is closed
   - Pricing drawer emits a `pricingModalClosed` event and accepts an `onClose` callback so pages can re‑load data after a subscription change
 - **Saved Recipes** - Save your favorite recipes to your personal collection
+  - Remove items by opening the recipe page and clicking the "Remove from Collection" button, or use the trash icon on the My Saved Recipes screen
 - **Cross-Platform Sync** - User data synced between Next.js frontend and Strapi backend
 
 ### 🎨 UI/UX
@@ -297,6 +298,10 @@ DATABASE_PASSWORD=password
 ## 📚 API Reference
 
 ### TheMealDB API (Frontend Integration)
+
+> 🗑️ **Removing saved recipes:**
+> Users can delete recipes from their collection either by visiting the recipe detail view and toggling the save button, or directly from the **My Saved Recipes** page using the red trash icon that appears on each card when hovered.
+
 
 All recipe data is fetched from TheMealDB API via server actions.
 
