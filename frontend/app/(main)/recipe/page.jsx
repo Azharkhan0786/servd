@@ -42,6 +42,25 @@ function RecipeContent() {
     const [recipeId, setRecipeId] = useState(null);
     const [isSaved, setIsSaved] = useState(false);
 
+    // helper that re-fetches the current recipe and refreshes server
+    // components (header/badge).  this is invoked after the pricing modal
+    // closes so we can pick up any subscription change that happened there.
+    const reloadRecipe = () => {
+      if (!recipeName) return;
+      const formData = new FormData();
+      formData.append("recipeName", recipeName);
+      fetchRecipe(formData);
+      router.refresh();
+    };
+
+    // also listen for the global event in case the modal is opened from the
+    // header; that component can't easily provide a callback to us.
+    useEffect(() => {
+      const handler = () => reloadRecipe();
+      window.addEventListener("pricingModalClosed", handler);
+      return () => window.removeEventListener("pricingModalClosed", handler);
+    }, [recipeName]);
+
     // Get or generate recipe
     const {
         loading: loadingRecipe,
@@ -278,7 +297,10 @@ function RecipeContent() {
                                 <Users className="w-5 h-5 text-orange-600" />
                                 <span className="font-medium">{recipe.servings} servings</span>
                             </div>
-                            {recipe.nutrition?.calories && (
+                            {/* only show a quick calorie count if user is Pro – otherwise
+                            the full nutrition panel below is locked and we don't want a
+                            stray number in the header */}
+                            {recipeData.isPro && recipe.nutrition?.calories && (
                                 <div className="flex items-center gap-2">
                                     <Flame className="w-5 h-5 text-orange-600" />
                                     <span className="font-medium">
@@ -390,6 +412,7 @@ function RecipeContent() {
                                     <ProLockedSection
                                         isPro={recipeData.isPro}
                                         lockText="Nutrition info is Pro-only"
+                                        onClose={reloadRecipe}
                                     >
                                         <div className="grid grid-cols-2 gap-3">
                                             <div className="bg-orange-50 p-3 text-center border-2 border-orange-100">
@@ -514,6 +537,7 @@ function RecipeContent() {
                                     isPro={recipeData.isPro}
                                     lockText="Chef tips are Pro-only"
                                     ctaText="Unlock Pro Tips →"
+                                    onClose={reloadRecipe}
                                 >
                                     <ul className="space-y-3">
                                         {recipe.tips.map((tip, i) => (
@@ -550,6 +574,7 @@ function RecipeContent() {
                                 <ProLockedSection
                                     isPro={recipeData.isPro}
                                     lockText="Substitutions are Pro-only"
+                                    onClose={reloadRecipe}
                                 >
                                     <div className="space-y-4">
                                         {recipe.substitutions.map((sub, i) => (
