@@ -57,6 +57,8 @@ The platform features a modern, responsive design with AI-generated recipe sugge
 ### 👤 User Features
 - **Authentication** - Secure sign-up/sign-in with Clerk
 - **Subscription Tiers** - Free and Pro plans with Clerk Billing
+  - UI updates immediately when the user changes plan; the header badge, nutrition panels, and other gated features refresh as soon as the pricing modal is closed
+  - Pricing drawer emits a `pricingModalClosed` event and accepts an `onClose` callback so pages can re‑load data after a subscription change
 - **Saved Recipes** - Save your favorite recipes to your personal collection
 - **Cross-Platform Sync** - User data synced between Next.js frontend and Strapi backend
 
@@ -69,6 +71,11 @@ The platform features a modern, responsive design with AI-generated recipe sugge
 ---
 
 ## 🛠️ Tech Stack
+
+> 💡 **Developer notes:**
+> - Subscription-related client code listens for a `pricingModalClosed` event and calls `router.refresh()` so tier-dependent UI stays in sync.
+> - The header component is exported with `export const dynamic = "force-dynamic"` to bypass caching when the user upgrades or downgrades.
+
 
 ### Frontend
 | Technology | Purpose |
@@ -118,9 +125,9 @@ airecipeplatform/
 │   ├── actions/             # Server actions (API calls)
 │   ├── components/          # React components
 │   │   ├── ui/             # Base UI components
-│   │   ├── Header.jsx      # Navigation header
+│   │   ├── Header.jsx      # Navigation header (server component, marked `force-dynamic` to ensure subscription badge is always fresh)
 │   │   ├── PricingSection.jsx  # Pricing display
-│   │   ├── PricingModal.jsx    # Pricing details modal
+│   │   ├── PricingModal.jsx    # Pricing details modal (supports `onClose` callback and emits global event on close)
 │   │   ├── RecipeGrid.jsx      # Recipe display grid
 │   │   └── UserDropdown.jsx    # User menu dropdown
 │   ├── hooks/               # Custom React hooks
