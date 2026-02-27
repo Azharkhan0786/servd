@@ -79,7 +79,6 @@ export default function HowToCookModal() {
             </div>
           </div>
 
-          {/* Examples */}
           <div className="bg-orange-50 rounded-xl p-4 border border-orange-100">
             <h4 className="text-sm font-semibold text-orange-900 mb-2">
               💡 Try These:
@@ -95,7 +94,7 @@ export default function HowToCookModal() {
                   >
                     {example}
                   </button>
-                )
+                ),
               )}
             </div>
           </div>
