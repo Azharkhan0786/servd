@@ -8,7 +8,7 @@ import { Toaster } from "sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Servd - Your AI Cooking Assistant",
+  title: "👨‍🍳 Servd - Your AI Cooking Assistant",
   description: "",
 };
 export default function RootLayout({ children }) {
