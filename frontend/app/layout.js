@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "👨‍🍳 Servd - Your AI Cooking Assistant",
-  description: "",
+  description: "AI for cooking recipes",
 };
 export default function RootLayout({ children }) {
   return (
